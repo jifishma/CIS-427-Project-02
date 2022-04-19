@@ -31,12 +31,12 @@ public class ResponseHandler implements Runnable {
                     String reply = responses.readUTF();
 
                     if (!reply.trim().equals("")) {
-                        // If the request handler has a request queued and was ready for the 
+                        // If the request handler has a request queued and was ready for the
                         // response, we'll unset the flag here and just print the result
                         if (requestHandler.hasRequest.getAndSet(false)) {
                             System.out.println("S:\t" + reply + "\n");
                         } else {
-                            // Otherwise, we'll break to a new line, print the response, 
+                            // Otherwise, we'll break to a new line, print the response,
                             // and reprint the prompt.
 
                             System.out.print("\n");
@@ -44,7 +44,7 @@ public class ResponseHandler implements Runnable {
                             System.out.print("C:\t");
                         }
 
-                        // And flag that we have a response at this point for the request 
+                        // And flag that we have a response at this point for the request
                         // handler
                         hasResponse.set(true);
                     }
@@ -54,6 +54,8 @@ public class ResponseHandler implements Runnable {
                     if (requestHandler.shouldClose.get() && reply.equals("200 OK")) {
                         this.shouldClose.set(true);
                         break;
+                    } else {
+                        requestHandler.shouldClose.set(false);
                     }
                 }
             }
