@@ -157,8 +157,9 @@ public class Handler implements Runnable {
 
                                 if (user != null) {
                                     this.userHandlerMap.remove(user.username);
-                                    this.user = newUser;
                                 }
+
+                                this.user = newUser;
                                 this.userHandlerMap.put(username, this);
                             } else {
                                 // If it's not valid, return a failure and allow the Client to retry
@@ -395,24 +396,36 @@ public class Handler implements Runnable {
             for (Handler h : userHandlerMap.values()) {
                 User hUser = h.getUser();
                 if (hUser != null && !hUser.username.equals(this.user.username)) {
-                    String message = args.remove(0);
+                    String message = String.join(" ", args);
                     h.receiveMessage(this.user, message.trim());
                 }
             }
 
+            response.writeUTF("SUCCESS");
             return;
         }
 
         String targetUser = args.remove(0);
         Handler h = userHandlerMap.getOrDefault(targetUser, null);
         if (h != null) {
-            String message = args.remove(0);
+            String message = String.join(" ", args);
             h.receiveMessage(this.user, message.trim());
+            response.writeUTF("SUCCESS");
+        } else {
+            Boolean targetExists = CREDS_MANAGER.containsUsername(targetUser);
+            if (targetExists) {
+                response.writeUTF(MessageFormat.format("User {0} is not logged in", targetUser));
+            } else {
+                response.writeUTF(MessageFormat.format("User {0} does not exist", targetUser));
+            }
         }
     }
 
     private void receiveMessage(User sender, String message) {
-        response.writeUTF(message);
+        try {
+            response.writeUTF(MessageFormat.format("Message from {0}: {1}", sender.username, message));
+        } catch (IOException e) {
+        }
     }
 
     // Get the contents of the specified user's solutions file and return it as a

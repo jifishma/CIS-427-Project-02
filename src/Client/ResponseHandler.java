@@ -13,6 +13,7 @@ public class ResponseHandler implements Runnable {
 
     private DataInputStream responses;
     public RequestHandler requestHandler;
+
     public AtomicBoolean hasResponse = new AtomicBoolean(true);
 
     public ResponseHandler(Socket socket) throws IOException {
@@ -28,7 +29,14 @@ public class ResponseHandler implements Runnable {
                     String reply = responses.readUTF();
 
                     if (!reply.trim().equals("")) {
-                        System.out.println("S:\t" + reply + "\n");
+                        if (requestHandler.hasRequest.getAndSet(false)) {
+                            System.out.println("S:\t" + reply + "\n");
+                        } else {
+                            System.out.print("\n");
+                            System.out.println("S:\t" + reply + "\n");
+                            System.out.print("C:\t");
+                        }
+
                         hasResponse.set(true);
                     }
 

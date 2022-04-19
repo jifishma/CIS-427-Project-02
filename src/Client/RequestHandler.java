@@ -12,9 +12,10 @@ public class RequestHandler implements Runnable {
     private static final Logger LOGGER = Logger.getLogger(Client.class.getName());
 
     private DataOutputStream requests;
-
-    public AtomicBoolean shouldClose = new AtomicBoolean(false);
     public ResponseHandler responseHandler;
+
+    public AtomicBoolean hasRequest = new AtomicBoolean(false);
+    public AtomicBoolean shouldClose = new AtomicBoolean(false);
 
     public RequestHandler(Socket socket) throws IOException {
         this.requests = new DataOutputStream(socket.getOutputStream());
@@ -32,17 +33,19 @@ public class RequestHandler implements Runnable {
                 System.out.print("C:\t");
 
                 if (input.hasNextLine()) {
+                    this.hasRequest.set(true);
                     String message = input.nextLine();
                     String parsedMessage = message.trim().toLowerCase();
 
                     // Submit a request or command to the Server
                     this.requests.writeUTF(message);
 
-                    
                     if (parsedMessage.equals("shutdown") || parsedMessage.equals("logout")) {
                         this.shouldClose.set(true);
                     }
                 }
+
+                responseHandler.hasResponse.set(false);
             } while (!shouldClose.get());
         } catch (IOException e) {
             LOGGER.log(Level.WARNING, "Couldn\'t read from the input stream.");
