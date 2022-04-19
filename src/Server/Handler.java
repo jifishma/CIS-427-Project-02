@@ -185,12 +185,14 @@ public class Handler implements Runnable {
                         LOGGER.log(Level.INFO, "Server shutting down.\n");
                         serverSocket.close();
                         run = false;
+                        break;
                     case "logout":
                         // Logout the authenticated user and begin listening for the next client
                         // connection.
                         this.user = null;
                         response.writeUTF("200 OK");
                         run = false;
+                        break;
                     default:
                         // If we weren't able to match the primary command to any case in the switch,
                         // return a 300 invalid command to the Client.
