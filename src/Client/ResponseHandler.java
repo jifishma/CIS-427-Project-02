@@ -15,6 +15,7 @@ public class ResponseHandler implements Runnable {
     public RequestHandler requestHandler;
 
     public AtomicBoolean hasResponse = new AtomicBoolean(true);
+    public AtomicBoolean shouldClose = new AtomicBoolean(false);
 
     public ResponseHandler(Socket socket) throws IOException {
         this.responses = new DataInputStream(socket.getInputStream());
@@ -51,6 +52,7 @@ public class ResponseHandler implements Runnable {
                     // If the request handler was trying to close the client, we'll check
                     // for a valid exit condition here (we tried to leave, and the server said OK.)
                     if (requestHandler.shouldClose.get() && reply.equals("200 OK")) {
+                        this.shouldClose.set(true);
                         break;
                     }
                 }
