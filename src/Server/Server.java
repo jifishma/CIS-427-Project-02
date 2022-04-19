@@ -1,12 +1,10 @@
 package Server;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.*;
-
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Server {
     private static final Logger LOGGER = Logger.getLogger(Server.class.getName());
