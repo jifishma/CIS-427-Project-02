@@ -2,15 +2,15 @@ package Client;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.lang.System.Logger;
-import java.lang.System.Logger.Level;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.Scanner;
 
 public class Client {
-    private static final Logger LOGGER = System.getLogger(Client.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Client.class.getName());
     private static final String SERVER_HOST = "localhost";
     private static final int SERVER_PORT = 3000;
     private static final int CONNECTION_TIMEOUT = 2000;
@@ -36,7 +36,7 @@ public class Client {
             response.readBoolean();
 
             // If the connection was accepted, alert the user of which Server they connected to.
-            LOGGER.log(Level.INFO, "Connection established with {0}\n", socket.getInetAddress());
+            LOGGER.log(Level.SEVERE, "Connection established with {0}\n", socket.getInetAddress());
 
             // Then we enter a message loop that continues until the user logs out of or
             // shuts down the Server
@@ -62,9 +62,9 @@ public class Client {
             request.close();
             response.close();
         } catch (ConnectException | SocketTimeoutException e) {
-            LOGGER.log(Level.ERROR, "Could not establish a connection with {0}\n", SERVER_HOST);
+            LOGGER.log(Level.SEVERE, "Could not establish a connection with {0}\n", SERVER_HOST);
         } catch (Exception ex) {
-            LOGGER.log(Level.ERROR, "Something really bad happened and the Client unexpectedly stopped.");
+            LOGGER.log(Level.SEVERE, "Something really bad happened and the Client unexpectedly stopped.");
             ex.printStackTrace();
         } finally {
             // Ensure we close the Client Input Stream as well

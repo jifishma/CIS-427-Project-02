@@ -1,4 +1,4 @@
-package Server;
+package Shared;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,11 +10,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CredsManager {
-    private static final HashMap<String, String> credentials = new HashMap<>();
+    private static final HashMap<String, User> credentials = new HashMap<>();
     private static final Pattern r = Pattern.compile("(?<username>^\\w*)\\s+(?<password>\\w*$)");
     private static CredsManager instance = null;
-
-    private String authenticatedUser = "";
 
     public static CredsManager getInstance() {
         if (instance == null)
@@ -44,10 +42,13 @@ public class CredsManager {
                 if (m.find()) {
                     String username = m.group("username");
                     String password = m.group("password");
+                    User user = new User();
+                    user.username = username;
+                    user.password = password;
 
                     // Once we validate both exists and are valid, cache them in a HashMap to ensure
                     // only one set of these credentials can exist.
-                    credentials.put(username, password);
+                    credentials.put(username, user);
                 } else {
                     // If we get here, we weren't able to validate the entry against our expression
                     // and therefore hold an invalid username-password pair.
@@ -61,23 +62,14 @@ public class CredsManager {
     }
 
     // Attempt to log in to the Server with the given credentials
-    public boolean authenticateUser(String username, String password) {
-        if (credentials.containsKey(username) && credentials.get(username).equals(password)) {
-            authenticatedUser = username;
-            return true;
+    public User authenticateUser(String username, String password) {
+        User user = credentials.get(username);
+
+        if (user != null && user.password.equals(password)) {
+            return user;
         }
 
-        return false;
-    }
-
-    // Log out the current user from the Server
-    public void logoutUser() {
-        authenticatedUser = "";
-    }
-
-    // Get the current user's username if authenticated
-    public String getAuthenticatedUser() {
-        return authenticatedUser;
+        return null;
     }
 
     // Get all available usernames
