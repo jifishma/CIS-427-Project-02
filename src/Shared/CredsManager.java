@@ -77,4 +77,8 @@ public class CredsManager {
         return credentials.keySet()
                 .toArray(new String[credentials.keySet().size()]);
     }
+
+    public Boolean containsUsername(String username) {
+        return credentials.keySet().contains(username);
+    }
 }
