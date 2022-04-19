@@ -35,7 +35,10 @@ public class Handler implements Runnable {
     // Define how we want to format our Decimals
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.00");
 
+    // Keep a list of usernames to Handler relations
     private static ConcurrentHashMap<String, Handler> userHandlerMap = new ConcurrentHashMap<>();
+    
+    // Keep a list of all connected Handlers, whether or not they're logged in.
     private static ConcurrentLinkedQueue<Handler> handlerQueue = new ConcurrentLinkedQueue<>();
 
     private User user = null;
@@ -51,7 +54,9 @@ public class Handler implements Runnable {
 
         handlerQueue.add(this);
     }
-
+    
+    
+    // Close the handler, even if not logged in.
     public void closeClient() {
         try {
             handlerQueue.remove(this);
@@ -63,7 +68,9 @@ public class Handler implements Runnable {
         }
     }
 
+    
     public static void closeAllClients() {
+        // Close all Handlers, even if not logged in.
         for (Handler h : handlerQueue) {
             h.closeClient();
         }
