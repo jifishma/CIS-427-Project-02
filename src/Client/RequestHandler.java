@@ -9,7 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class RequestHandler implements Runnable {
-    private static final Logger LOGGER = Logger.getLogger(Client.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(RequestHandler.class.getName());
 
     private DataOutputStream requests;
     public ResponseHandler responseHandler;
@@ -28,7 +28,7 @@ public class RequestHandler implements Runnable {
             do {
                 // If we don't have a response from the response handler
                 // thread, we'll just wait
-                if (!responseHandler.hasResponse.getAndSet(false) || this.shouldClose.get()) {
+                if (this.shouldClose.get() || !responseHandler.hasResponse.getAndSet(false)) {
                     continue;
                 }
 
@@ -54,7 +54,7 @@ public class RequestHandler implements Runnable {
                 // It may be updated before this request handler's next loop begins
                 // to indicate we have a response and should not print a prompt yet
                 responseHandler.hasResponse.set(false);
-            } while (!shouldClose.get() || !responseHandler.shouldClose.get());
+            } while (!(this.shouldClose.get() && responseHandler.shouldClose.get()));
         } catch (IOException e) {
             LOGGER.log(Level.WARNING, "Couldn\'t read from the input stream.");
         }

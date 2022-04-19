@@ -3,13 +3,12 @@ package Client;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ResponseHandler implements Runnable {
-    private static final Logger LOGGER = Logger.getLogger(Client.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ResponseHandler.class.getName());
 
     private DataInputStream responses;
     public RequestHandler requestHandler;
@@ -46,7 +45,7 @@ public class ResponseHandler implements Runnable {
 
                         // And flag that we have a response at this point for the request
                         // handler
-                        hasResponse.set(true);
+                        this.hasResponse.set(true);
                     }
 
                     // If the request handler was trying to close the client, we'll check

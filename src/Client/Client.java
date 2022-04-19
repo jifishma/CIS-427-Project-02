@@ -1,14 +1,12 @@
 package Client;
 
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Client {
     private static final Logger LOGGER = Logger.getLogger(Client.class.getName());
