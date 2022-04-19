@@ -4,7 +4,7 @@ https://github.com/jifishma/CIS-427-Project-02
 
 ### Building the project
 
-This project was built using RedHat OpenJDK, version 11.0.10-1.
+This project was built using Oracle JRE, version 1.8.
 To build the project, navigate to the 'src' directory and run the following commands:
 
 For the client:
@@ -17,7 +17,7 @@ For the server:
 
 ### Running the project
 
-To run the project, you can run the commands below. The Server must be started before the Client. Please note that only one Client can connect to the Server at a time.
+To run the project, you can run the commands below. The Server must be started before the Client. Multiple Clients can connect to the Server at a time!
 
 If for some reason you're seeing the below error message with only one Client:
 
@@ -62,7 +62,8 @@ For the server:
 ### LOGIN
 
 ```
-Conection established with localhost/127.0.0.1
+INFO: Connection established with localhost/127.0.0.1
+
 C:      login root root22
 S:      SUCCESS
 ```
@@ -216,10 +217,22 @@ C:      message jacky Yo what's up?
 S:      User jacky does not exist
 ```
 
+Invalid request:
+```
+INFO: Connection established with localhost/127.0.0.1
+
+C:      login root root22
+S:      SUCCESS
+
+C:      message
+S:      301 message format error
+```
+
 ### LOGOUT
 
 ```
-Conection established with localhost/127.0.0.1
+INFO: Conection established with localhost/127.0.0.1
+
 C:      login root root22
 S:      SUCCESS
 
@@ -230,7 +243,8 @@ S:      200 OK
 ### SHUTDOWN
 
 ```
-Conection established with localhost/127.0.0.1
+INFO: Conection established with localhost/127.0.0.1
+
 C:      login john john22
 S:      SUCCESS
 
