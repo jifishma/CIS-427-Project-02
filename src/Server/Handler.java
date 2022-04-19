@@ -34,7 +34,7 @@ public class Handler implements Runnable {
 
     // Keep a list of usernames to Handler relations
     private static ConcurrentHashMap<String, Handler> userHandlerMap = new ConcurrentHashMap<>();
-    
+
     // Keep a list of all connected Handlers, whether or not they're logged in.
     private static ConcurrentLinkedQueue<Handler> handlerQueue = new ConcurrentLinkedQueue<>();
 
@@ -51,8 +51,7 @@ public class Handler implements Runnable {
 
         handlerQueue.add(this);
     }
-    
-    
+
     // Close the handler, even if not logged in.
     public void closeClient() {
         try {
@@ -65,7 +64,6 @@ public class Handler implements Runnable {
         }
     }
 
-    
     public static void closeAllClients() {
         // Close all Handlers, even if not logged in.
         for (Handler h : handlerQueue) {
@@ -433,9 +431,11 @@ public class Handler implements Runnable {
             // If they're not connected, check if their account exists
             Boolean targetExists = CREDS_MANAGER.containsUsername(targetUser);
             if (targetExists) {
+                LOGGER.log(Level.WARNING, "User " + targetUser + " is not logged in");
                 // If it does, let the sender know they're not logged in
                 response.writeUTF(MessageFormat.format("User {0} is not logged in", targetUser));
             } else {
+                LOGGER.log(Level.WARNING, "User " + targetUser + " is not a valid account");
                 // Otherwise let them know it's not a valid account name
                 response.writeUTF(MessageFormat.format("User {0} does not exist", targetUser));
             }
