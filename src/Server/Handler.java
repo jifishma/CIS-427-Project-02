@@ -376,6 +376,7 @@ public class Handler implements Runnable {
     }
 
     private void sendMessage(List<String> args) throws IOException {
+        // Check if we have the appropriate arguments
         if (args.size() < 2) {
             response.writeUTF("301 message format error");
             return;
@@ -383,8 +384,9 @@ public class Handler implements Runnable {
 
         String currentUser = this.user.username;
 
+        // If we do and we're requesting to broadcast
         if (args.contains("-all")) {
-            // If it does, check if the current user is "root"
+            // check if the current user is "root"
             if (!currentUser.equalsIgnoreCase("root")) {
                 // If they're not, return a failure message to the Client and have them try
                 // again.
@@ -392,11 +394,17 @@ public class Handler implements Runnable {
                 return;
             }
 
+            // Otherwise we'll remove our broadcast flag
             args.remove(0);
+            // Iterate through all the connected users
             for (Handler h : userHandlerMap.values()) {
                 User hUser = h.getUser();
                 if (hUser != null && !hUser.username.equals(this.user.username)) {
+                    // And join our remaining arguments to form the message
                     String message = String.join(" ", args);
+
+                    // Then we pass it off to the appropriate client handler to send
+                    // the message back to the target sockets
                     h.receiveMessage(this.user, message.trim());
                 }
             }
@@ -405,17 +413,26 @@ public class Handler implements Runnable {
             return;
         }
 
+        // Parse the message's target user
         String targetUser = args.remove(0);
+        // And retreive the user's handler if they're connected
         Handler h = userHandlerMap.getOrDefault(targetUser, null);
         if (h != null) {
+            // If they are connected, join our remaining arguments to form the message
             String message = String.join(" ", args);
+
+            // Then we pass it off to the appropriate client handler to send
+            // the message back to the target sockets
             h.receiveMessage(this.user, message.trim());
             response.writeUTF("SUCCESS");
         } else {
+            // If they're not connected, check if their account exists
             Boolean targetExists = CREDS_MANAGER.containsUsername(targetUser);
             if (targetExists) {
+                // If it does, let the sender know they're not logged in
                 response.writeUTF(MessageFormat.format("User {0} is not logged in", targetUser));
             } else {
+                // Otherwise let them know it's not a valid account name
                 response.writeUTF(MessageFormat.format("User {0} does not exist", targetUser));
             }
         }
@@ -423,6 +440,8 @@ public class Handler implements Runnable {
 
     private void receiveMessage(User sender, String message) {
         try {
+            // If the handler is the indended receipient of a message,
+            // send if off to their connected client
             response.writeUTF(MessageFormat.format("Message from {0}: {1}", sender.username, message));
         } catch (IOException e) {
         }

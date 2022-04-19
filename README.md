@@ -37,7 +37,7 @@ For the server:
 
 -   Terminology:
     -   \<\> = required argument
-    -   [  ] = optional argument
+    -   [ ] = optional argument
 -   LOGIN \<username\> \<password\>
     -   Attempt to log in to a user account with the provided credentials
 -   SOLVE \<-c | -r\> \<radius | side length\> [side length 2]
@@ -49,6 +49,9 @@ For the server:
 -   LIST [-all]
     -   Print the current user's requested SOLVE operations and results
     -   If logged in as "root", print all of the users' requested SOLVE operations and results
+-   MESSAGE \<-all | user's name\> \<message content\>
+    -   Directly message another connected user
+    -   If logged in as "root", optionally broadcast your message to all connected users
 -   LOGOUT
     -   Log the current user out and exit
 -   SHUTDOWN
@@ -143,6 +146,74 @@ S:
                 ERROR: No radius found
         qiang
                 No interactions yet
+```
+
+### MESSAGE
+
+Simple messaging:
+
+```
+INFO: Connection established with localhost/127.0.0.1
+
+C:      login root root22
+S:      SUCCESS
+
+C:      message -all Hey everyone, what's new??
+S:      SUCCESS
+
+C:
+S:      Message from john: Just got a car!
+
+C:
+S:      Message from qiang: Reading my favorite book.
+```
+
+```
+C:      login john john22
+S:      SUCCESS
+
+C:
+S:      Message from root: Hey everyone, what's new??
+
+C:      message root Just got a car!
+S:      SUCCESS
+```
+
+```
+INFO: Connection established with localhost/127.0.0.1
+
+C:      login qiang qiang22
+S:      SUCCESS
+
+C:
+S:      Message from root: Hey everyone, what's new??
+
+C:      message root Reading my favorite book.
+S:      SUCCESS
+```
+
+If a user isn't logged in:
+
+```
+INFO: Connection established with localhost/127.0.0.1
+
+C:      login root root22
+S:      SUCCESS
+
+C:      message sally Are you on today?
+S:      User sally is not logged in
+```
+
+If a user isn't found:
+
+```
+INFO: Connection established with localhost/127.0.0.1
+
+C:      login root root22
+S:      SUCCESS
+
+C:      message jacky Yo what's up?
+S:      User jacky does not exist
 ```
 
 ### LOGOUT
